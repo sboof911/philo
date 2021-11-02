@@ -6,7 +6,7 @@
 /*   By: amaach <amaach@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 09:23:50 by amaach            #+#    #+#             */
-/*   Updated: 2021/11/02 16:59:19 by amaach           ###   ########.fr       */
+/*   Updated: 2021/11/02 17:09:39 by amaach           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,8 @@ int	ft_is_alldigit(char *str)
 	int	i;
 
 	i = 0;
+	if (str[i] == '\0')
+		return (0);
 	while (str[i] != '\0')
 	{
 		if (!ft_isdigit(str[i]))
