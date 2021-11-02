@@ -6,7 +6,7 @@
 /*   By: amaach <amaach@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 09:23:50 by amaach            #+#    #+#             */
-/*   Updated: 2021/11/02 16:44:21 by amaach           ###   ########.fr       */
+/*   Updated: 2021/11/02 16:59:19 by amaach           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,28 +16,28 @@
 #include <unistd.h>
 #include <sys/time.h>
 
-typedef struct	s_philosophers
+typedef struct s_philosophers
 {
-	pthread_t	thread;
+	pthread_t			thread;
 	unsigned long long	last_eat;
 	unsigned long long	nb_meals;
 }				t_philosophers;
 
-typedef struct	s_infos
+typedef struct s_infos
 {
-	int	id;
+	int					id;
 	unsigned long long	number;
 	unsigned long long	die;
 	unsigned long long	eat;
 	unsigned long long	sleep;
 	unsigned long long	pme;
-	t_philosophers	*philo;
-	pthread_mutex_t	*forks;
+	t_philosophers		*philo;
+	pthread_mutex_t		*forks;
 }				t_infos;
 
 unsigned long long	ft_gettime(void)
 {
-	struct timeval	time;
+	struct timeval		time;
 	unsigned long long	time_in_mill;
 
 	gettimeofday(&time, NULL);
@@ -45,7 +45,7 @@ unsigned long long	ft_gettime(void)
 	return (time_in_mill);
 }
 
-t_infos		*statlist(void)
+t_infos	*statlist(void)
 {
 	static t_infos	ret;
 
@@ -63,7 +63,7 @@ void	my_sleep(unsigned long long i)
 		usleep(100);
 		current_time = ft_gettime();
 		if (current_time >= time_beggin + i)
-			break;
+			break ;
 	}
 }
 
@@ -121,8 +121,8 @@ int	initialisation(char **argv, int argc)
 	t_infos		*info;
 
 	info = statlist();
-	if (ft_is_alldigit(argv[1]) && ft_is_alldigit(argv[2]) && ft_is_alldigit(argv[3])
-		&& ft_is_alldigit(argv[4]))
+	if (ft_is_alldigit(argv[1]) && ft_is_alldigit(argv[2])
+		&& ft_is_alldigit(argv[3]) && ft_is_alldigit(argv[4]))
 	{
 		info->number = ft_atoi(argv[1]);
 		info->die = ft_atoi(argv[2]);
@@ -170,12 +170,12 @@ void	*routine(void *arg)
 	return (0);
 }
 
-int		check_death()
+int	check_death(void)
 {
-	t_infos		*info;
-	unsigned long long test;
-	int	full;
-	int	i;
+	t_infos				*info;
+	unsigned long long	test;
+	int					full;
+	int					i;
 
 	full = 0;
 	i = 0;
@@ -197,14 +197,12 @@ int		check_death()
 	return (0);
 }
 
-int		beggin()
+int	beggin(int i)
 {
-	int	i;
-	int	*id;
-	t_infos *info;
+	int		*id;
+	t_infos	*info;
 
 	info = statlist();
-	i = 0;
 	while (i < info->number)
 		pthread_mutex_init(&info->forks[i++], NULL);
 	i = 0;
@@ -228,7 +226,7 @@ int		beggin()
 	return (0);
 }
 
-int		main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
 	t_infos		*info;
 	int			i;
@@ -241,7 +239,7 @@ int		main(int argc, char **argv)
 			return (1);
 		info->philo = malloc((sizeof (t_philosophers)) * info->number);
 		info->forks = malloc((sizeof (pthread_mutex_t)) * info->number);
-		if (beggin())
+		if (beggin(0))
 			return (1);
 	}
 	else
