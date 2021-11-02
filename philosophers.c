@@ -6,7 +6,7 @@
 /*   By: amaach <amaach@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 09:23:50 by amaach            #+#    #+#             */
-/*   Updated: 2021/11/02 16:27:46 by amaach           ###   ########.fr       */
+/*   Updated: 2021/11/02 16:44:21 by amaach           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ typedef struct	s_philosophers
 {
 	pthread_t	thread;
 	unsigned long long	last_eat;
+	unsigned long long	nb_meals;
 }				t_philosophers;
 
 typedef struct	s_infos
@@ -134,6 +135,8 @@ int	initialisation(char **argv, int argc)
 			else
 				return (1);
 		}
+		else
+			info->pme = -22;
 	}
 	else
 		return (1);
@@ -147,6 +150,7 @@ void	*routine(void *arg)
 
 	id = *(int *)arg;
 	info = statlist();
+	info->philo[id].nb_meals = 0;
 	while (1)
 	{
 		pthread_mutex_lock(&info->forks[id]);
@@ -154,6 +158,7 @@ void	*routine(void *arg)
 		pthread_mutex_lock(&info->forks[(id + 1) % info->number]);
 		printf("%lld %d has taken a fork\n", ft_gettime(), id);
 		info->philo[id].last_eat = ft_gettime();
+		info->philo[id].nb_meals++;
 		printf("%lld %d is eating\n", ft_gettime(), id);
 		my_sleep(info->eat);
 		pthread_mutex_unlock(&info->forks[id]);
@@ -169,8 +174,10 @@ int		check_death()
 {
 	t_infos		*info;
 	unsigned long long test;
+	int	full;
 	int	i;
 
+	full = 0;
 	i = 0;
 	info = statlist();
 	while (i < info->number)
@@ -181,6 +188,10 @@ int		check_death()
 			printf("%lld %d died\n", ft_gettime(), i);
 			return (1);
 		}
+		if (info->pme >= 0)
+			full += (info->philo[i].nb_meals >= info->pme);
+		if (full == info->number)
+			return (1);
 		i++;
 	}
 	return (0);
